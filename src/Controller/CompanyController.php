@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Offer;
 use App\Form\CompanyType;
+use App\Form\OfferType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,5 +66,34 @@ class CompanyController extends AbstractController
         return $this->render('company/show_offers.html.twig', [
             'company' => $company,
         ]);
+    }
+
+    /**
+     * @param Company $company
+     * @param Request $request
+     * @Route("/company/{id}/offers/new", name="new_offer")
+     * @ParamConverter("company", class="App\Entity\Company")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function newOffer(Company $company, Request $request, EntityManagerInterface $entityManager)
+    {
+        $offer = new Offer();
+        $offer->setOwner($company);
+
+        $form = $this->createForm(OfferType::class, $offer);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($offer);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('offers', ['id' => $company->getId()]);
+        }
+
+        return $this->render('offer/new.html.twig',
+            [
+                'form' => $form->createView(),
+            ]);
     }
 }
