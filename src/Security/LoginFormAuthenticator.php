@@ -106,7 +106,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
                 'owner' => $token->getUser(),
             ])){
 
-                return new RedirectResponse($this->urlGenerator->generate('offers', [ 'id' => $company->getId() ]));
+                return new RedirectResponse($this->urlGenerator->generate('company_offers', [ 'id' => $company->getId() ]));
             }
         }
 
