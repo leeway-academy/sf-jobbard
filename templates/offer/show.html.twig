@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ofertas publicadas{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Oferta "{{ offer.title }}"</h1>
+
+    {% if offer.applicants | length %}
+        <table>
+            <thead>
+            <tr>
+                <td>Postulante</td>
+                <td>Correo</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for a in offer.applicants %}
+            <tr>
+                <td>{{ a.applicant.name }}</td>
+                <td><a href="mailto:{{ a.applicant.email }}">{{ a.applicant.email }}</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aún no se han recibido postulaciones</p>
+    {% endif %}
+</div>
+{% endblock %}
