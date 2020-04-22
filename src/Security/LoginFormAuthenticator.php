@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Company;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -96,9 +97,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             return new RedirectResponse($targetPath);
         }
 
-        if ( in_array( 'ROLE_ADMIN', $token->getUser()->getRoles() ) ) {
+        $roles = $token->getUser()->getRoles();
+        if ( in_array( 'ROLE_ADMIN', $roles) ) {
 
             return new RedirectResponse($this->urlGenerator->generate('company'));
+        } elseif ( in_array('ROLE_COMPANY', $roles) ) {
+            if ( $company = $this->entityManager->getRepository(Company::class)->findOneBy([
+                'owner' => $token->getUser(),
+            ])){
+
+                return new RedirectResponse($this->urlGenerator->generate('offers', [ 'id' => $company->getId() ]));
+            }
         }
 
         // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
