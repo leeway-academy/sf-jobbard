@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ofertas publicadas{% endblock %}
+{% block title %}Ofertas disponibles{% endblock %}
 
 {% block body %}
     <style>
@@ -8,13 +8,18 @@
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
     </style>
 
+    <div id="flash-messages">
+        {% for flashMessage in app.flashes %}
+            <p>{{ flashMessage }}</p>
+        {% endfor %}
+    </div>
     <div class="example-wrapper">
-        <h1>Ofertas publicadas</h1>
+        <h1>Ofertas disponibles</h1>
 
         {% if offers|length > 0 %}
             <ul>
                 {% for offer in offers %}
-                    <li>{{ offer.title }}</li>
+                    <li>{{ offer.title }} - <a href="{{ url('offer_apply', { id: offer.id }) }}">Postular</a></li>
                 {% endfor %}
             </ul>
         {% else %}
