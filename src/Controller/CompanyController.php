@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Form\CompanyType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Company;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class CompanyController extends AbstractController
 {
@@ -49,6 +51,18 @@ class CompanyController extends AbstractController
 
         return $this->render('company/new.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/company/{id}/offers", name="company_offers")
+     * @ParamConverter("company", class="App\Entity\Company")
+     * @IsGranted("ROLE_COMPANY")
+     */
+    public function showOffers(Company $company)
+    {
+        return $this->render('company/show_offers.html.twig', [
+            'company' => $company,
         ]);
     }
 }
