@@ -22,8 +22,8 @@
             <tbody>
             {% for a in offer.applicants %}
             <tr>
-                <td>{{ a.applicant.name }}</td>
-                <td><a href="mailto:{{ a.applicant.email }}">{{ a.applicant.email }}</a></td>
+                <td>{{ a.name }}</td>
+                <td><a href="mailto:{{ a.email }}">{{ a.email }}</a></td>
             </tr>
             {% endfor %}
             </tbody>
