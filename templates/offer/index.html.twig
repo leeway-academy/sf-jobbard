@@ -9,8 +9,10 @@
     </style>
 
     <div id="flash-messages">
-        {% for flashMessage in app.flashes %}
-            <p>{{ flashMessage }}</p>
+        {% for messages in app.flashes %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
         {% endfor %}
     </div>
     <div class="example-wrapper">
