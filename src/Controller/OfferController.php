@@ -67,6 +67,11 @@ class OfferController extends AbstractController
             }
 
             return $this->redirectToRoute('offers');
+        } else {
+            return $this->redirectToRoute('applicant_new',
+            [
+                'offerId' => $offer->getId(),
+            ]);
         }
     }
 }
