@@ -8,12 +8,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class OfferController
  * @package App\Controller
- * @Route("/offer")
  */
 class OfferController extends AbstractController
 {
@@ -47,7 +48,7 @@ class OfferController extends AbstractController
      * @ParamConverter("offer", class="App\Entity\Offer")
      * @IsGranted("ROLE_APPLICANT")
      */
-    public function apply(Offer $offer, EntityManagerInterface $entityManager)
+    public function apply(Offer $offer, EntityManagerInterface $entityManager, MailerInterface $mailer)
     {
         $user = $this->getUser();
 
@@ -62,6 +63,14 @@ class OfferController extends AbstractController
             try {
                 $entityManager->flush();
                 $this->addFlash('success', 'Solicitud recibida!');
+
+                $email = (new Email())
+                    ->from('jobboard@platzi.com')
+                    ->to($offer->getOwner()->getEmail())
+                    ->subject('Se recibió un nuevo postulante para '.$offer->getTitle().'!')
+                    ->html('<p>'.$applicant->getName().' está interesado/a. Su correo es '.$applicant->getEmail().'</p>')
+                ;
+                $mailer->send($email);
             } catch (\Exception $exception) {
                 $this->addFlash('danger', 'La solicitud no pudo almacenarse. Por favor intente nuevamente.');
             }
